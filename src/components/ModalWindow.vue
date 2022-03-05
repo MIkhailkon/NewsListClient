@@ -19,45 +19,9 @@
             <input v-model="author" placeholder="author">
           </div>
           <div class="checkboxes">
-            <div class="input">
-              <input type="checkbox" id="music" value="music" v-model="tags">
-              <label for="music">Музыка</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="hobi" value="hobi" v-model="tags">
-              <label for="hobi">Хобби</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="finances" value="finances" v-model="tags">
-              <label for="finances">Финансы</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="life" value="life" v-model="tags">
-              <label for="life">Жизнь</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="auto" value="auto" v-model="tags">
-              <label for="auto">Автомобили</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="code" value="code" v-model="tags">
-              <label for="code">Код</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="education" value="education" v-model="tags">
-              <label for="education">Учеба</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="text" value="text" v-model="tags">
-              <label for="text">Текст</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="air" value="air" v-model="tags">
-              <label for="air">Воздух</label>
-            </div>
-            <div class="input">
-              <input type="checkbox" id="climat" value="climat" v-model="tags">
-              <label for="climat">Климат</label>
+            <div class="input" v-for="tag in tags" :key="tag.id">
+              <input type="checkbox" :id="tag.name" :value="tag.name" v-model="form.tags">
+              <label :for="tag.name">{{ tag.name }}</label>
             </div>
           </div>
         </div>
@@ -95,7 +59,7 @@ export default {
       this.show = false
     },
     validateData: function () {
-      const length = this.tags.length
+      const length = this.form.tags.length
       this.errors = []
       if (length > 3) {
         this.errors.push('Выберете не более 3 тегов')
@@ -115,11 +79,23 @@ export default {
     },
     sendDataFunction: async function () {
       if (this.validateData()) {
-        await axios.post('http:127.0.0.1:8000/api/news', this.form).catch(err => console.log(err))
+        this.form.text = this.text
+        this.form.author = this.author
+
+        await axios.post('http://127.0.0.1:8000/api/news', this.form).catch(err => console.log(err))
         this.closeModal()
       }
       return false
+    },
+    async getTags () {
+      const tags = await axios.get('http://127.0.0.1:8000/api/tag').catch(err => console.log(err))
+      this.tags = tags.data
+      console.log(tags)
+      return this.tags
     }
+  },
+  mounted () {
+    this.getTags()
   }
 }
 </script>
