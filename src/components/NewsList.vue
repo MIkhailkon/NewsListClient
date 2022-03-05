@@ -11,7 +11,7 @@
 
         <template v-slot:tag>
           <div class="tag" v-for="tag in oneNews.tags" :key="tag.id">
-            #{{ tag }}
+            #{{ tag.name }}
           </div>
         </template>
         <template v-slot:created>

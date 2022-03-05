@@ -81,6 +81,7 @@ export default {
       if (this.validateData()) {
         this.form.text = this.text
         this.form.author = this.author
+        console.log(this.form)
 
         await axios.post('http://127.0.0.1:8000/api/news', this.form).catch(err => console.log(err))
         this.closeModal()
